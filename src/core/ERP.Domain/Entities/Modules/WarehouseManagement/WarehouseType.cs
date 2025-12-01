@@ -1,0 +1,42 @@
+﻿namespace ERP.Domain.Entities.Modules.WarehouseManagement
+{
+    public enum WarehouseType
+    {
+        /// <summary>
+        /// مواد اولیه اصلی
+        /// </summary>
+        RawMaterial = 0,
+        /// <summary>
+        /// نیمه ساخته
+        /// </summary>
+        SemiFinished = 1,
+        /// <summary>
+        /// محصول نهایی
+        /// </summary>
+        Product = 2,
+        /// <summary>
+        /// تعمیر و نگهداری
+        /// </summary>
+        Maintenance = 3,
+        /// <summary>
+        /// ملزومات مصرفی
+        /// </summary>
+        Consumable = 4,
+        /// <summary>
+        /// لوازم بسته‌بندی
+        /// </summary>
+        Packaging = 5,
+        /// <summary>
+        /// مواد بازیافتی
+        /// </summary>
+        Recycle = 6,
+        /// <summary>
+        /// ضایعات
+        /// </summary>
+        Scrap = 7,
+        /// <summary>
+        /// انبار در مسیر
+        /// </summary>
+        Transit = 8
+    }
+}
