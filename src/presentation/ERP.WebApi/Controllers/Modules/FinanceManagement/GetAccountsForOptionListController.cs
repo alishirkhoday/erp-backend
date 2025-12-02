@@ -1,4 +1,4 @@
-﻿using ERP.Application.Common.ResponseModels;
+﻿using ERP.Application.Common.ResponseDTOs;
 using ERP.Application.UseCases.Modules.FinanceManagement.Queries.GetAccountsForOptionList;
 
 namespace ERP.WebApi.Controllers.Modules.FinanceManagement

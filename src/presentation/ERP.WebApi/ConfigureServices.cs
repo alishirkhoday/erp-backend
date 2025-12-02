@@ -1,11 +1,12 @@
 ﻿using ERP.Application.Common;
+using ERP.Application.Common.Interfaces.Authentication;
 using ERP.Application.Common.Logging;
-using ERP.Application.Services.Authentication;
 using ERP.Domain.Repositories.Users;
 using ERP.WebApi.DTOs;
 using ERP.WebApi.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
@@ -103,7 +104,7 @@ namespace ERP.WebApi
                             context.Fail("UserSessionRepository has been deleted");
                             return Task.CompletedTask;
                         }
-                        var userSession = _userSessionRepository.GetByUserAndTokenAsync(user, token.Hash()).Result;
+                        var userSession = _userSessionRepository.GetByUserAndTokenAsync(user, token.HashSha256()).Result;
                         if (userSession is null)
                         {
                             context.Fail("User's session has been deleted");
@@ -184,53 +185,53 @@ namespace ERP.WebApi
                 .Enrich.With<CreatedAtEnricher>()
                 .Enrich.With<SensitiveDataEnricher>()
                 .Enrich.FromLogContext();
-            ////var mongoConnectionString = configuration["ConnectionStrings:LogDatabase"];
-            //var mongoSettingsHost = configuration["Serilog:WriteTo:0:Args:Settings:Host"];
-            //var mongoSettingsPort = configuration["Serilog:WriteTo:0:Args:Settings:Port"];
-            //var mongoDatabaseName = configuration["Serilog:WriteTo:0:Args:DatabaseName"];
-            //var mongoCollectionName = configuration["Serilog:WriteTo:0:Args:CollectionName"];
-            //var mongoClientSettings = new MongoClientSettings
-            //{
-            //    Server = new MongoServerAddress(mongoSettingsHost, int.Parse(mongoSettingsPort ?? throw new ArgumentNullException(mongoSettingsPort))),
-            //    //Credential = MongoCredential.CreateCredential(database, user, pass),
-            //    ConnectTimeout = TimeSpan.FromSeconds(10),
-            //    SocketTimeout = TimeSpan.FromSeconds(30)
-            //};
-            //if (environment.IsDevelopment())
-            //{
-            //    mongoClientSettings.AllowInsecureTls = true;
-            //    mongoClientSettings.UseTls = false;
-            //    mongoClientSettings.IPv6 = false;
-            //}
-            //if (environment.IsStaging())
-            //{
-            //    mongoClientSettings.AllowInsecureTls = false;
-            //    mongoClientSettings.UseTls = true;
-            //    mongoClientSettings.IPv6 = false;
-            //}
-            //if (environment.IsProduction())
-            //{
-            //    mongoClientSettings.AllowInsecureTls = false;
-            //    mongoClientSettings.UseTls = true;
-            //    mongoClientSettings.IPv6 = false;
-            //}
-            //var mongoClient = new MongoClient(mongoClientSettings);
-            //var database = mongoClient.GetDatabase(mongoDatabaseName ?? throw new ArgumentNullException(mongoDatabaseName));
-            //var collection = database.GetCollection<BsonDocument>(mongoCollectionName ?? throw new ArgumentNullException(mongoCollectionName));
-            //var indexKeys = Builders<BsonDocument>.IndexKeys.Ascending("CreatedAt");
-            //var indexOptions = new CreateIndexOptions { ExpireAfter = TimeSpan.FromDays(30) };
-            //collection.Indexes.CreateOne(new CreateIndexModel<BsonDocument>(indexKeys, indexOptions));
-            //loggerConfiguration
-            //    .WriteTo.MongoDB(database, default, mongoCollectionName, 50, TimeSpan.FromSeconds(1));
+            //var mongoConnectionString = configuration["ConnectionStrings:LogDatabase"];
+            var mongoSettingsHost = configuration["Serilog:WriteTo:0:Args:Settings:Host"];
+            var mongoSettingsPort = configuration["Serilog:WriteTo:0:Args:Settings:Port"];
+            var mongoDatabaseName = configuration["Serilog:WriteTo:0:Args:DatabaseName"];
+            var mongoCollectionName = configuration["Serilog:WriteTo:0:Args:CollectionName"];
+            var mongoClientSettings = new MongoClientSettings
+            {
+                Server = new MongoServerAddress(mongoSettingsHost, int.Parse(mongoSettingsPort ?? throw new ArgumentNullException(mongoSettingsPort))),
+                //Credential = MongoCredential.CreateCredential(database, user, pass),
+                ConnectTimeout = TimeSpan.FromSeconds(10),
+                SocketTimeout = TimeSpan.FromSeconds(30)
+            };
+            if (environment.IsDevelopment())
+            {
+                mongoClientSettings.AllowInsecureTls = true;
+                mongoClientSettings.UseTls = false;
+                mongoClientSettings.IPv6 = false;
+            }
+            if (environment.IsStaging())
+            {
+                mongoClientSettings.AllowInsecureTls = false;
+                mongoClientSettings.UseTls = true;
+                mongoClientSettings.IPv6 = false;
+            }
+            if (environment.IsProduction())
+            {
+                mongoClientSettings.AllowInsecureTls = false;
+                mongoClientSettings.UseTls = true;
+                mongoClientSettings.IPv6 = false;
+            }
+            var mongoClient = new MongoClient(mongoClientSettings);
+            var database = mongoClient.GetDatabase(mongoDatabaseName ?? throw new ArgumentNullException(mongoDatabaseName));
+            var collection = database.GetCollection<BsonDocument>(mongoCollectionName ?? throw new ArgumentNullException(mongoCollectionName));
+            var indexKeys = Builders<BsonDocument>.IndexKeys.Ascending("CreatedAt");
+            var indexOptions = new CreateIndexOptions { ExpireAfter = TimeSpan.FromDays(30) };
+            collection.Indexes.CreateOne(new CreateIndexModel<BsonDocument>(indexKeys, indexOptions));
+            loggerConfiguration
+                .WriteTo.MongoDB(database, default, mongoCollectionName, 50, TimeSpan.FromSeconds(1));
 
-            //var filePath = configuration["Serilog:WriteTo:1:Args:Path"];
-            //var fileRollingInterval = configuration["Serilog:WriteTo:1:Args:RollingInterval"];
-            //var fileRetainedFileCountLimit = configuration["Serilog:WriteTo:1:Args:RetainedFileCountLimit"];
-            //loggerConfiguration
-            //    .WriteTo.File(
-            //        filePath ?? throw new ArgumentNullException(filePath),
-            //        rollingInterval: Enum.Parse<RollingInterval>(fileRollingInterval ?? throw new ArgumentNullException(fileRollingInterval)),
-            //        retainedFileCountLimit: int.Parse(fileRetainedFileCountLimit ?? throw new ArgumentNullException(fileRetainedFileCountLimit)));
+            var filePath = configuration["Serilog:WriteTo:1:Args:Path"];
+            var fileRollingInterval = configuration["Serilog:WriteTo:1:Args:RollingInterval"];
+            var fileRetainedFileCountLimit = configuration["Serilog:WriteTo:1:Args:RetainedFileCountLimit"];
+            loggerConfiguration
+                .WriteTo.File(
+                    filePath ?? throw new ArgumentNullException(filePath),
+                    rollingInterval: Enum.Parse<RollingInterval>(fileRollingInterval ?? throw new ArgumentNullException(fileRollingInterval)),
+                    retainedFileCountLimit: int.Parse(fileRetainedFileCountLimit ?? throw new ArgumentNullException(fileRetainedFileCountLimit)));
 
             if (environment.IsDevelopment())
             {

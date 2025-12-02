@@ -1,4 +1,5 @@
-﻿using ERP.Domain.Entities.Modules.HumanResourcesManagement;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Domain.Entities.Modules.HumanResourcesManagement;
 using ERP.Domain.Repositories.Modules.HumanResourcesManagement;
 using ERP.Domain.Repositories.Users;
 

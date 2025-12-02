@@ -1,4 +1,4 @@
-﻿using ERP.Application.Services.Authentication;
+﻿using ERP.Application.Common.Interfaces.Authentication;
 using ERP.Domain.Entities.Users;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

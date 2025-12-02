@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using StackExchange.Redis;
 
 namespace ERP.Infrastructure.CacheDatabase.Context
 {

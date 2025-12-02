@@ -1,4 +1,5 @@
-﻿using ERP.Domain.Primitives;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Domain.Primitives;
 using ERP.Domain.Repositories;
 using System.Linq.Expressions;
 

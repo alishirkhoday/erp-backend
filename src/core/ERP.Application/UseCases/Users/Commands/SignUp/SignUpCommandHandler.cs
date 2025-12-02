@@ -1,12 +1,15 @@
-﻿using ERP.Domain.Entities.Users;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Application.Common.Security;
+using ERP.Domain.Entities.Users;
 using ERP.Domain.Repositories.Users;
 using System.Text;
 
 namespace ERP.Application.UseCases.Users.Commands.SignUp
 {
     public sealed class SignUpCommandHandler(IMainDbContext context, IUserRepository userRepository)
-        : BaseCommandHandler(context), IRequestHandler<SignUpCommand, Result<SignUpResultDto, Error>>
+        : IRequestHandler<SignUpCommand, Result<SignUpResultDto, Error>>
     {
+        private readonly IMainDbContext _context = context;
         private readonly IUserRepository _userRepository = userRepository;
 
         public async Task<Result<SignUpResultDto, Error>> Handle(SignUpCommand request, CancellationToken cancellationToken)
@@ -16,7 +19,7 @@ namespace ERP.Application.UseCases.Users.Commands.SignUp
             {
                 return Result.Failure<SignUpResultDto, Error>(Errors.User.UsernameIsUsed(request.Username));
             }
-            var newUser = new User(request.Username, request.Password.Hash());
+            var newUser = new User(request.Username, request.Password.HashPassword());
             await _userRepository.CreateAsync(newUser, cancellationToken);
             if (!string.IsNullOrEmpty(request.MobilePhoneNumberRegionCode) && !string.IsNullOrEmpty(request.MobilePhoneNumber))
             {

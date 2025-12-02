@@ -6,15 +6,25 @@ namespace ERP.Application.Common
 {
     public static class Utilities
     {
-        public static string Hash(this string value)
+        public static string HashSha256(this string value)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value);
-            var bytes = Encoding.UTF8.GetBytes(value.ToString());
-            var hashedBytes = SHA256.HashData(bytes);
-            hashedBytes = SHA384.HashData(hashedBytes);
-            hashedBytes = SHA512.HashData(hashedBytes);
-            var result = Encoding.UTF8.GetString(hashedBytes);
-            return result;
+
+            var bytes = Encoding.UTF8.GetBytes(value);
+            var hashed = SHA256.HashData(bytes);
+
+            return Convert.ToBase64String(hashed);
+        }
+
+        public static string HMACSha256(this string value)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
+
+            var key = Encoding.UTF8.GetBytes("keyForHashOtpCode");
+            var data = Encoding.UTF8.GetBytes(value);
+            var hashed = HMACSHA256.HashData(key, data);
+
+            return Convert.ToBase64String(hashed);
         }
 
         public static string ToFullEnglishDifference(this DateTimeOffset from, DateTimeOffset to)
@@ -140,16 +150,14 @@ namespace ERP.Application.Common
                 default:
                     break;
             }
-            var result = new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
-            return result;
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         public static string RemoveSpecialCharacters(this string value)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value);
             var reg = new Regex("[-!@#$%^&*()…{}'_！©®℗™°℃℉÷⁍¸‸⁁⁒µ♪¡‽․⁞⁚⁝⁘⁖⁛⁙·‥…⁗‣•‷‶‵‴″′⁑⁂‡†§⁕„‚⁄¬‘’‚‛‟„”“⁄¬⁅›⁆‹⁾¦⁽—⁌–¶⁋`´¨‼⁈⁇ª●+=¿*\\\\,/.’<>?`~\":◯;©|¶\n\r\t\\[\\]]");
-            var result = reg.Replace(value, "");
-            return result;
+            return reg.Replace(value, "");
         }
     }
 }

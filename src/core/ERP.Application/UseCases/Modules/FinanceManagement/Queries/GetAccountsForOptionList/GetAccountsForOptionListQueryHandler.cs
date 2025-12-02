@@ -1,4 +1,4 @@
-﻿using ERP.Application.Common.ResponseModels;
+﻿using ERP.Application.Common.ResponseDTOs;
 using ERP.Domain.Repositories.Modules.FinanceManagement;
 
 namespace ERP.Application.UseCases.Modules.FinanceManagement.Queries.GetAccountsForOptionList

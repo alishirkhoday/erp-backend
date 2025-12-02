@@ -1,12 +1,15 @@
-﻿using ERP.Application.Services.Authentication;
+﻿using ERP.Application.Common.Interfaces.Authentication;
+using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Application.Common.Security;
 using ERP.Domain.Entities.Users;
 using ERP.Domain.Repositories.Users;
 
 namespace ERP.Application.UseCases.Users.Commands.SignIn
 {
-    public class SignInCommandHandler(IMainDbContext context, IUserRepository userRepository, IUserSessionRepository userSessionRepository, ITokenService tokenService)
-        : BaseCommandHandler(context), IRequestHandler<SignInCommand, Result<string, Error>>
+    public sealed class SignInCommandHandler(IMainDbContext context, IUserRepository userRepository, IUserSessionRepository userSessionRepository, ITokenService tokenService)
+        : IRequestHandler<SignInCommand, Result<string, Error>>
     {
+        private readonly IMainDbContext _context = context;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IUserSessionRepository _userSessionRepository = userSessionRepository;
         private readonly ITokenService _tokenService = tokenService;
@@ -30,7 +33,7 @@ namespace ERP.Application.UseCases.Users.Commands.SignIn
             {
                 return Result.Failure<string, Error>(Errors.User.UserAccountIsLocked(DateTimeOffset.UtcNow.ToHourMinuteDifference(user.LockoutEnd.Value)));
             }
-            if (user.Password.Value != request.Password.Hash())
+            if (PasswordHashService.VerifyPassword(user.Password.Value, request.Password))
             {
                 user.HandleAccessFailed();
                 //_resultSaveChanges = await _context.SaveChanges(cancellationToken);
@@ -46,7 +49,7 @@ namespace ERP.Application.UseCases.Users.Commands.SignIn
             {
                 return Result.Failure<string, Error>(Errors.General.AnErrorHasOccurred());
             }
-            var session = new UserSession(user, token.Hash(), tokenExpireDate, request.InternetProtocol, request.DeviceName, request.OperatingSystem);
+            var session = new UserSession(user, token.HashSha256(), tokenExpireDate, request.InternetProtocol, request.DeviceName, request.OperatingSystem);
             await _userSessionRepository.CreateAsync(session, cancellationToken);
             user.ResetLockout();
             var resultSaveChanges = await _context.SaveChanges(cancellationToken);

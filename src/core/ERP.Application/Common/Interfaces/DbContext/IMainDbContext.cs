@@ -11,7 +11,7 @@ using ERP.Domain.Entities.Users;
 using ERP.Domain.Primitives;
 using Microsoft.EntityFrameworkCore;
 
-namespace ERP.Application.Common.Interfaces
+namespace ERP.Application.Common.Interfaces.DbContext
 {
     public interface IMainDbContext
     {

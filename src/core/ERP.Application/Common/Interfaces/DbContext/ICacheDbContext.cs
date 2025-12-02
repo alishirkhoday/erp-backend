@@ -1,6 +1,6 @@
 ﻿using StackExchange.Redis;
 
-namespace ERP.Application.Common.Interfaces
+namespace ERP.Application.Common.Interfaces.DbContext
 {
     public interface ICacheDbContext
     {

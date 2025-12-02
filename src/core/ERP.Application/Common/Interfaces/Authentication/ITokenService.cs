@@ -1,6 +1,6 @@
 ﻿using ERP.Domain.Entities.Users;
 
-namespace ERP.Application.Services.Authentication
+namespace ERP.Application.Common.Interfaces.Authentication
 {
     public interface ITokenService
     {

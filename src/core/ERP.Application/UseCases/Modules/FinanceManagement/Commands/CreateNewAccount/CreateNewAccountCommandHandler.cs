@@ -1,4 +1,5 @@
-﻿using ERP.Domain.Entities.Modules.FinanceManagement;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Domain.Entities.Modules.FinanceManagement;
 using ERP.Domain.Repositories.Modules.FinanceManagement;
 
 namespace ERP.Application.UseCases.Modules.FinanceManagement.Commands.CreateNewAccount

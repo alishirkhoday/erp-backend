@@ -1,6 +1,6 @@
-﻿using ERP.Application.Common;
-using ERP.Application.Services.OTPCodes;
-using ERP.Application.Services.OTPCodes.Models;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Application.Common.Interfaces.Verification;
+using ERP.Application.UseCases.Users.Models;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Security.Cryptography;
@@ -42,7 +42,8 @@ namespace ERP.Infrastructure.Services.OTPCodes
             // Secure OTP 6-digit
             string code = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
 
-            var otp = new OTPCode(userId, code.Hash(), channel);
+            //Todo : Hash code
+            var otp = new OTPCode(userId, code, channel);
             string json = JsonConvert.SerializeObject(otp);
 
             // Save OTP with TTL

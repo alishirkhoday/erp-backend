@@ -1,11 +1,13 @@
-﻿using ERP.Application.Services.OTPCodes;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Application.Common.Interfaces.Verification;
 using ERP.Domain.Repositories.Users;
 
 namespace ERP.Application.UseCases.Users.Commands.VerificationCode
 {
     public sealed class VerificationCodeCommandHandler(IMainDbContext context, IUserRepository userRepository, IOTPCodeService otpCodeService)
-        : BaseCommandHandler(context), IRequestHandler<VerificationCodeCommand, Result<string, Error>>
+        : IRequestHandler<VerificationCodeCommand, Result<string, Error>>
     {
+        private readonly IMainDbContext _context = context;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IOTPCodeService _otpCodeService = otpCodeService;
 

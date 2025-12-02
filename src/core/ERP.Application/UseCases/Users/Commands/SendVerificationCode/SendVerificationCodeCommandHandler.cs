@@ -1,5 +1,5 @@
-﻿using ERP.Application.Services.OTPCodes;
-using ERP.Application.Services.OTPCodes.Models;
+﻿using ERP.Application.Common.Interfaces.Verification;
+using ERP.Application.UseCases.Users.Models;
 using ERP.Domain.Repositories.Users;
 
 namespace ERP.Application.UseCases.Users.Commands.SendVerificationCode

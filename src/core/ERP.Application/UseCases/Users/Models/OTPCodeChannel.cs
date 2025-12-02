@@ -1,4 +1,4 @@
-﻿namespace ERP.Application.Services.OTPCodes.Models
+﻿namespace ERP.Application.UseCases.Users.Models
 {
     public enum OTPCodeChannel
     {

@@ -1,4 +1,5 @@
-﻿using ERP.Domain.Entities.Files;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Domain.Entities.Files;
 using ERP.Domain.Entities.Modules.CustomersRelationshipManagement;
 using ERP.Domain.Entities.Modules.FinanceManagement;
 using ERP.Domain.Entities.Modules.HumanResourcesManagement;

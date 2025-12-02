@@ -1,4 +1,5 @@
-﻿using ERP.Domain.Entities.Users;
+﻿using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Domain.Entities.Users;
 using ERP.Domain.Repositories.Users;
 using System.Linq.Expressions;
 

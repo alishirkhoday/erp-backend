@@ -1,6 +1,6 @@
-﻿using ERP.Application.Services.OTPCodes.Models;
+﻿using ERP.Application.UseCases.Users.Models;
 
-namespace ERP.Application.Services.OTPCodes
+namespace ERP.Application.Common.Interfaces.Verification
 {
     public interface IOTPCodeService
     {
