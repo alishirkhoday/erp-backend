@@ -20,9 +20,8 @@ namespace ERP.Application.Common.Security
         private readonly ConcurrentDictionary<string, byte[]> _keys = new();
 
         // Protect active key change
-        private readonly object _activeKeyLock = new();
-
-        private string _activeKeyId;
+        private readonly Lock _activeKeyLock = new();
+        private string _activeKeyId = "";
 
         /// <summary>
         /// Creates the AES-GCM crypto service and loads keys from the given provider.
@@ -112,7 +111,7 @@ namespace ERP.Application.Common.Security
         /// <inheritdoc/>
         public string Encrypt(string plainText)
         {
-            if (plainText == null) throw new ArgumentNullException(nameof(plainText));
+            ArgumentNullException.ThrowIfNull(plainText);
 
             // snapshot current key
             string keyId;

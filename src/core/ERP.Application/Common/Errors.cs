@@ -74,6 +74,11 @@
                 return new Error("TheNumberOfRequestsForVerificationCodeHasBeenReached", $"The number of requests for verification code has been reached.");
             }
 
+            public static Error ErrorForSendVerificationCode()
+            {
+                return new Error("ErrorForSendVerificationCode", "Error for send verification code");
+            }
+
             public static Error VerificationCodeIsNotValid()
             {
                 return new Error("VerificationCodeIsNotValid", $"Verification code is not valid.");

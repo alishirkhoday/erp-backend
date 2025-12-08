@@ -4,6 +4,7 @@
     {
         public const string ApiVersion = "1.0";
 
+        public const string AuthenticationSwaggerGroup = "Authentication";
         public const string UserSwaggerGroup = "User";
 
         public const string HumanSwaggerGroup = "Human";

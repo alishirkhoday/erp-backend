@@ -1,5 +1,5 @@
-﻿using ERP.Application.Common.Interfaces.DbContext;
-using ERP.Application.Common.Interfaces.Verification;
+﻿using ERP.Application.Common.Interfaces.Authentication;
+using ERP.Application.Common.Interfaces.DbContext;
 using ERP.Domain.Repositories.Modules.FinanceManagement;
 using ERP.Domain.Repositories.Modules.HumanResourcesManagement;
 using ERP.Domain.Repositories.Users;
@@ -8,7 +8,7 @@ using ERP.Infrastructure.MainDatabase.Context;
 using ERP.Infrastructure.MainDatabase.Repositories.Modules.FinanceManagement;
 using ERP.Infrastructure.MainDatabase.Repositories.Modules.HumanResourcesManagement;
 using ERP.Infrastructure.MainDatabase.Repositories.Users;
-using ERP.Infrastructure.Services.OTPCodes;
+using ERP.Infrastructure.Services.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
@@ -34,7 +34,7 @@ namespace ERP.Infrastructure
             });
 
             services.AddScoped<ICacheDbContext, CacheDbContext>();
-            services.AddScoped<IOTPCodeService, OTPCodeService>();
+            services.AddScoped<IOneTimePasswordService, OneTimePasswordService>();
             services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
                 var redisConnectionString = configuration["ConnectionStrings:CacheDatabase"];
