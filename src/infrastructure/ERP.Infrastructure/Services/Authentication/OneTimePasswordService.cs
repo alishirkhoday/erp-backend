@@ -22,13 +22,13 @@ namespace ERP.Infrastructure.Services.Authentication
             _db = _context.Db;
         }
 
-        private string CodeKey(string userId) => $"{_context.Prefix}code:{userId}";
-        private string CountKey(string userId) => $"{_context.Prefix}count:{userId}";
+        private string CodeKey(string mobilePhoneNumberOrEmail) => $"{_context.Prefix}code:{mobilePhoneNumberOrEmail}";
+        private string CountKey(string mobilePhoneNumberOrEmail) => $"{_context.Prefix}count:{mobilePhoneNumberOrEmail}";
 
-        public async Task<Tuple<string?, bool>> GenerateAsync(string userId, OneTimePasswordChannel channel, CancellationToken cancellationToken = default)
+        public async Task<Tuple<string?, bool>> GenerateAsync(string mobilePhoneNumberOrEmail, OneTimePasswordChannel channel, CancellationToken cancellationToken = default)
         {
-            var codeKey = CodeKey(userId);
-            var countKey = CountKey(userId);
+            var codeKey = CodeKey(mobilePhoneNumberOrEmail);
+            var countKey = CountKey(mobilePhoneNumberOrEmail);
 
             // Atomic increment
             long count = await _db.StringIncrementAsync(countKey);
@@ -43,8 +43,8 @@ namespace ERP.Infrastructure.Services.Authentication
             // Secure OTP 6-digit
             string code = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
 
-            //Todo : Hash code
-            var otp = new OneTimePassword(userId, code, DateTimeOffset.UtcNow.AddMinutes(OtpTTLMinutes), channel);
+            //to do : Hash code
+            var otp = new OneTimePassword(mobilePhoneNumberOrEmail, code, DateTimeOffset.UtcNow.AddMinutes(OtpTTLMinutes), channel);
             string json = JsonConvert.SerializeObject(otp);
 
             // Save OTP with TTL
@@ -53,9 +53,9 @@ namespace ERP.Infrastructure.Services.Authentication
             return new Tuple<string?, bool>(code, true);
         }
 
-        public async Task<OneTimePassword?> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+        public async Task<OneTimePassword?> GetByMobilePhoneNumberOrEmailAsync(string mobilePhoneNumberOrEmail, CancellationToken cancellationToken = default)
         {
-            var codeKey = CodeKey(userId);
+            var codeKey = CodeKey(mobilePhoneNumberOrEmail);
             var value = await _db.StringGetAsync(codeKey);
             if (value.IsNullOrEmpty)
                 return null;
@@ -63,9 +63,9 @@ namespace ERP.Infrastructure.Services.Authentication
             return JsonConvert.DeserializeObject<OneTimePassword>(value);
         }
 
-        public async Task<bool> VerifyAsync(string userId, string inputCode, CancellationToken cancellationToken = default)
+        public async Task<bool> VerifyAsync(string mobilePhoneNumberOrEmail, string inputCode, CancellationToken cancellationToken = default)
         {
-            var codeKey = CodeKey(userId);
+            var codeKey = CodeKey(mobilePhoneNumberOrEmail);
 
             // LUA Script – get + delete atomically
             string script = @"
@@ -93,9 +93,9 @@ namespace ERP.Infrastructure.Services.Authentication
             return otp.Code == inputCode;
         }
 
-        public async Task<int?> GetUserOTPCountAsync(string userId, CancellationToken cancellationToken = default)
+        public async Task<int?> GetUserOTPCountAsync(string mobilePhoneNumberOrEmail, CancellationToken cancellationToken = default)
         {
-            var countKey = CountKey(userId);
+            var countKey = CountKey(mobilePhoneNumberOrEmail);
             var val = await _db.StringGetAsync(countKey);
             if (val.IsNullOrEmpty)
                 return 0;

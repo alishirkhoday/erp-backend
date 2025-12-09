@@ -2,7 +2,7 @@
 {
     public record SendVerificationCodeDto
     {
-        public string Username { get; init; } = default!;
+        public string UserId { get; init; } = default!;
         public string? MobilePhoneNumberWithRegionCode { get; init; }
         public string? Email { get; init; }
     }

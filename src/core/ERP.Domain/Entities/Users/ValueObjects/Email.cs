@@ -14,7 +14,7 @@
             {
                 throw new ArgumentException($"value is null");
             }
-            Value = value.Trim();
+            Value = value;
         }
 
         public static implicit operator Email(string value)

@@ -4,9 +4,8 @@
     {
         public SendVerificationCodeCommandValidator()
         {
-            RuleFor(u => u.Username)
-                .NotEmpty().WithMessage(Helpers.ValidatorsMessages.UsernameIsRequired)
-                .Must(u => u.IsValidateUsername()).WithMessage(Helpers.ValidatorsMessages.UsernameIsNotValid);
+            RuleFor(u => u.UserId)
+                .NotEmpty().WithMessage(Helpers.ValidatorsMessages.UserIdIsRequired);
 
             RuleFor(u => u.MobilePhoneNumberWithRegionCode)
                 .MaximumLength(20).WithMessage(Helpers.ValidatorsMessages.MobilePhoneNumberWithRegionCodeLength)

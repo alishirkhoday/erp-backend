@@ -1,4 +1,5 @@
-﻿using ERP.Domain.Entities.Users.ValueObjects;
+﻿using ERP.Domain.Entities.Users.Normalization;
+using ERP.Domain.Entities.Users.ValueObjects;
 using System.Text;
 
 namespace ERP.Domain.Entities.Users
@@ -44,7 +45,7 @@ namespace ERP.Domain.Entities.Users
             ArgumentException.ThrowIfNullOrWhiteSpace(username, nameof(username));
             ArgumentException.ThrowIfNullOrWhiteSpace(password, nameof(password));
             Username = username;
-            NormalizedUsername = Username.Value.ToLowerInvariant();
+            NormalizedUsername = Username.Value.ToNormalization();
             Password = password;
             Status = UserStatus.Inactive;
             LockoutEnabled = true;
@@ -55,7 +56,7 @@ namespace ERP.Domain.Entities.Users
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(username, nameof(username));
             Username = username;
-            NormalizedUsername = Username.Value.ToLowerInvariant();
+            NormalizedUsername = Username.Value.ToNormalization();
         }
 
         public void ChangePassword(string password)
@@ -81,7 +82,7 @@ namespace ERP.Domain.Entities.Users
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(email, nameof(email));
             Email = email;
-            NormalizedEmail = Email.Value.ToLowerInvariant();
+            NormalizedEmail = Email.Value.ToNormalization();
             EmailConfirmed = false;
         }
 

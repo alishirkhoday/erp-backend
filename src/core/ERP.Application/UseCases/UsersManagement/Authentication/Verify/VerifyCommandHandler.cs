@@ -1,5 +1,6 @@
 ﻿using ERP.Application.Common.Interfaces.Authentication;
 using ERP.Application.Common.Interfaces.DbContext;
+using ERP.Domain.Entities.Users.Normalization;
 using ERP.Domain.Repositories.Users;
 
 namespace ERP.Application.UseCases.UsersManagement.Authentication.Verify
@@ -18,24 +19,30 @@ namespace ERP.Application.UseCases.UsersManagement.Authentication.Verify
             {
                 return Result.Failure<string, Error>(Errors.User.UserNotFound());
             }
-            var isVerifyOtpCode = await _otpCodeService.VerifyAsync(user.Id.ToString(), request.Code, cancellationToken);
-            if (!isVerifyOtpCode)
-            {
-                return Result.Failure<string, Error>(Errors.User.VerificationCodeIsNotValid());
-            }
+            bool isVerifyOtp;
             if (!string.IsNullOrEmpty(request.MobilePhoneNumberWithRegionCode))
             {
                 if (user.NormalizedMobilePhoneNumber != request.MobilePhoneNumberWithRegionCode)
                 {
                     return Result.Failure<string, Error>(Errors.User.ThisMobilePhoneNumberDoesNotMatch());
                 }
+                isVerifyOtp = await _otpCodeService.VerifyAsync(request.MobilePhoneNumberWithRegionCode, request.Code, cancellationToken);
+                if (!isVerifyOtp)
+                {
+                    return Result.Failure<string, Error>(Errors.User.VerificationCodeIsNotValid());
+                }
                 user.ConfirmMobilePhoneNumber();
             }
             else if (!string.IsNullOrEmpty(request.Email))
             {
-                if (user.NormalizedEmail != request.Email.ToLower().Trim())
+                if (user.NormalizedEmail != request.Email.ToNormalization())
                 {
                     return Result.Failure<string, Error>(Errors.User.ThisEmailDoesNotMatch());
+                }
+                isVerifyOtp = await _otpCodeService.VerifyAsync(request.Email, request.Code, cancellationToken);
+                if (!isVerifyOtp)
+                {
+                    return Result.Failure<string, Error>(Errors.User.VerificationCodeIsNotValid());
                 }
                 user.ConfirmEmail();
             }

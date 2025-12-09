@@ -40,8 +40,8 @@ namespace ERP.Application.UseCases.UsersManagement.Authentication.SignUp
                 }
                 var sendVerificationCodeCommand = new SendVerificationCodeCommand()
                 {
-                    Username = newUser.Username.Value,
-                    MobilePhoneNumberWithRegionCode = mobilePhoneNumberWithRegionCode
+                    UserId = newUser.Id.ToString(),
+                    MobilePhoneNumberWithRegionCode = newUser.NormalizedMobilePhoneNumber
                 };
                 var result = await _mediator.Send(sendVerificationCodeCommand, cancellationToken);
                 if (!result.IsSuccess)
@@ -64,8 +64,8 @@ namespace ERP.Application.UseCases.UsersManagement.Authentication.SignUp
                 }
                 var sendVerificationCodeCommand = new SendVerificationCodeCommand()
                 {
-                    Username = newUser.Username.Value,
-                    Email = newUser.Email.Value
+                    UserId = newUser.Id.ToString(),
+                    Email = newUser.NormalizedEmail
                 };
                 var result = await _mediator.Send(sendVerificationCodeCommand, cancellationToken);
                 if (!result.IsSuccess)
